@@ -12,11 +12,11 @@ namespace Yelware.Utilities.Validation
         T Value { get; }
 
         /// <summary>A function to validate that the parameter matches a condition.</summary>
-        /// <param name="condition">The test condition.</param>
+        /// <param name="verifyFunc">The predicate condition.</param>
         /// <param name="violationMessage">The message to pass to the exception constructor when condition is false.</param>
-        /// <remarks>This function will simply raise an EInvalidArgumentException when condition == false.
-        /// To use it call Validate.Parameter<int>(i, nameof(i)).Is(i == 10, $"Expected {nameof(i)} == 10. Was {i}");
+        /// <remarks>This function will simply raise an EInvalidArgumentException when <see cref="predicate"> returns false.
+        /// To use it call Validate.Parameter<int>(i, nameof(i)).Is((val) => val == 10, $"Expected {nameof(i)} == 10. Was {i}");
         /// <remarks>
-        IParameter<T> Is(bool condition, string violationMessage);
+        IParameter<T> Is(Predicate<T> verifyFunc, string violationMessage);
     }
 }

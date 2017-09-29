@@ -3,7 +3,7 @@ using System;
 namespace Yelware.Utilities.Validation
 {
     /// <summary>Base interface for a parameter with validation.</summary>
-    public class Parameter<T>: IParameter<T>
+    internal class Parameter<T>: IParameter<T>
     {
         /// <summary>The name of the parameter to be validated.</sumamary>
         public string Name { get; }
@@ -12,20 +12,19 @@ namespace Yelware.Utilities.Validation
         public T Value { get; }
 
         /// <summary>A function to validate that the parameter matches a condition.</summary>
-        /// <param name="condition">The test condition.</param>
+        /// <param name="verifyFunc">The predicate condition.</param>
         /// <param name="violationMessage">The message to pass to the exception constructor when condition is false.</param>
-        /// <remarks>This function will simply raise an EInvalidArgumentException when condition == false.
-        /// To use it call Validate.Parameter<int>(i, nameof(i)).Is(i == 10, $"Expected {nameof(i)} == 10. Was {i}");
+        /// <remarks>This function will simply raise an EInvalidArgumentException when <see cref="predicate"> returns false.
+        /// To use it call Validate.Parameter<int>(i, nameof(i)).Is((val) => val == 10, $"Expected {nameof(i)} == 10. Was {i}");
         /// <remarks>
-        public IParameter<T> Is(bool condition, string violationMessage)
+        public IParameter<T> Is(Predicate<T> verifyFunc, string violationMessage)
         {
-            if (condition)
-                return this;
-
-            throw new EInvalidArgumentException(violationMessage);
+            return verifyFunc(Value) 
+                ? this 
+                : throw new ArgumentException(violationMessage);
         }
 
-        public Parameter<T>(string name, T value)
+        public Parameter(string name, T value)
         {
             this.Name = name;
             this.Value = value;
