@@ -5,7 +5,7 @@ namespace Yelware.Utilities.Validation
     /// <summary>Base interface for a parameter with validation.</summary>
     internal class Parameter<T>: IParameter<T>
     {
-        /// <summary>The name of the parameter to be validated.</sumamary>
+        /// <summary>The name of the parameter to be validated.</summary>
         public string Name { get; private set; }
 
         /// <summary>The value that is validated.</summary>
@@ -14,9 +14,10 @@ namespace Yelware.Utilities.Validation
         /// <summary>A function to validate that the parameter matches a condition.</summary>
         /// <param name="verifyFunc">The predicate condition.</param>
         /// <param name="violationMessage">The message to pass to the exception constructor when condition is false.</param>
-        /// <remarks>This function will simply raise an EInvalidArgumentException when <see cref="predicate"> returns false.
-        /// To use it call Validate.Parameter<int>(i, nameof(i)).Is((val) => val == 10, $"Expected {nameof(i)} == 10. Was {i}");
-        /// <remarks>
+        /// <returns>Returns the IParameter interface.</returns>
+        /// <remarks>This function will simply raise an ArgumentException when <see cref="predicate"/> returns false.
+        /// To use it call Validate.Parameter&lt;int&gt;(i, nameof(i)).Is((val) =&gt; val == 10, $"Expected {nameof(i)} == 10. Was {i}");
+        /// </remarks>
         public IParameter<T> Is(Predicate<T> verifyFunc, string violationMessage)
         {
             return verifyFunc(Value) 
