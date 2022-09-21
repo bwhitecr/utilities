@@ -14,17 +14,19 @@ namespace Yelware.Utilities.Validation
         /// <summary>A function to validate that the parameter matches a condition.</summary>
         /// <param name="verifyFunc">The predicate condition.</param>
         /// <param name="violationMessage">The message to pass to the exception constructor when condition is false.</param>
-        /// <returns>Returns the IParameter interface.</returns>
-        /// <remarks>This function will simply raise an ArgumentException when <see cref="predicate"/> returns false.
-        /// To use it call Validate.Parameter&lt;int&gt;(i, nameof(i)).Is((val) =&gt; val == 10, $"Expected {nameof(i)} == 10. Was {i}");
+        /// <returns>Returns the <see cref="IParameter"/> interface.</returns>
+        /// <remarks>This function will simply raise an <see cref="ArgumentException"/> when <paramref name="predicate"/> returns false.
+        /// <code>
+        /// Validate.Parameter&lt;int&gt;(i, nameof(i)).Is((val) =&gt; val == 10, $"Expected {nameof(i)} == 10. Was {i}");
+        /// </code>
         /// </remarks>
-        IParameter<T> Is(Predicate<T> verifyFunc, string violationMessage);
+        IParameter<T> Match(Predicate<T> verifyFunc, string violationMessage);
 
         /// <summary>
         /// Allows the parameter name to be specified.
         /// </summary>
         /// <param name="name">The name of the parameter.</param>
-        /// <returns>Returns the IParameter interface.</returns>
+        /// <returns>Returns the <see cref="IParameter"/> interface.</returns>
         IParameter<T> Named(string name);
     }
 }

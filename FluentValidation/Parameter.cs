@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 
 namespace Yelware.Utilities.Validation
 {
@@ -11,19 +12,9 @@ namespace Yelware.Utilities.Validation
         /// <summary>The value that is validated.</summary>
         public T Value { get; }
 
-        /// <summary>A function to validate that the parameter matches a condition.</summary>
-        /// <param name="verifyFunc">The predicate condition.</param>
-        /// <param name="violationMessage">The message to pass to the exception constructor when condition is false.</param>
-        /// <returns>Returns the IParameter interface.</returns>
-        /// <remarks>This function will simply raise an ArgumentException when <see cref="predicate"/> returns false.
-        /// To use it call Validate.Parameter&lt;int&gt;(i, nameof(i)).Is((val) =&gt; val == 10, $"Expected {nameof(i)} == 10. Was {i}");
-        /// </remarks>
-        public IParameter<T> Is(Predicate<T> verifyFunc, string violationMessage)
-        {
-            return verifyFunc(Value) 
-                ? this 
-                : throw new ArgumentException(violationMessage);
-        }
+        /// <inheritdoc cref="IParameter{T}.Match"/>
+        public IParameter<T> Match(Predicate<T> verifyFunc, string violationMessage) =>
+            verifyFunc(Value) ? this : throw new ArgumentException(violationMessage, this.Name);
 
         /// <summary>
         /// Allows the parameter name to be specified.
@@ -40,21 +31,14 @@ namespace Yelware.Utilities.Validation
         /// Constructs a new instance of the Parameter class with the specified value.
         /// </summary>
         /// <param name="value">The value of the parameter.</param>
-        internal Parameter(T value)
-        {
-            this.Value = value;
-            Named(nameof(value));
-        }
-
-        /// <summary>
-        /// Constructs a new instance of the Parameter class with the specified value and name..
-        /// </summary>
-        /// <param name="value">The value of the parameter to validate.</param>
         /// <param name="name">The name of the parameter to validate.</param>
-        internal Parameter(T value, string name)
+        public Parameter(T value, [System.Runtime.CompilerServices.CallerArgumentExpression("value")] string name = "")
         {
             this.Value = value;
-            Named(name);
+            if (string.IsNullOrEmpty(name))
+                Named(nameof(value));
+            else
+                Named(name);
         }
     }
 }
